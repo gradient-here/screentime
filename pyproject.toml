@@ -16,7 +16,7 @@ mcp = [
     "mcp>=2.3.0",
 ]
 motherduck = [
-    "duckdb>=1.3",
+    "duckdb>=1.3,<2",
 ]
 
 [build-system]
@@ -31,7 +31,7 @@ screentime = ["data/*.json", "py.typed"]
 
 [dependency-groups]
 dev = [
-    "duckdb>=1.3",
+    "duckdb>=1.3,<2",
     "mcp>=2.3.0",
     "mypy>=1.17,<2",
     "pytest>=8,<9",
