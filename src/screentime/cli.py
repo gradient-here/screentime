@@ -91,6 +91,7 @@ def _pipeline(conn: sqlite3.Connection, settings: Settings, *, export: bool) -> 
         "days_rebuilt": imports.days_rebuilt,
         "influx_status": exports.influx_status,
         "ha_status": exports.ha_status,
+        "motherduck_status": exports.motherduck_status,
     }
     conn.execute(
         """UPDATE runs SET status=?, finished_at=?, events_read=?, events_inserted=?,
@@ -204,7 +205,9 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser = sub.add_parser("doctor", help="check config and data access")
     doctor_parser.add_argument("--json", action="store_true")
     doctor_parser.add_argument(
-        "--online", action="store_true", help="also test InfluxDB / Home Assistant"
+        "--online",
+        action="store_true",
+        help="also test InfluxDB / Home Assistant / MotherDuck",
     )
     wizard.add_arguments(
         sub.add_parser("setup", help="interactive setup and launchd agent")

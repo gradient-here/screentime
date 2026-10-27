@@ -7,6 +7,7 @@ import sqlite3
 from .config import Settings, integration_complete
 from .homeassistant import export_home_assistant
 from .influx import export_influx
+from .motherduck import export_motherduck
 
 
 @dataclass
@@ -14,6 +15,7 @@ class ExportResult:
     points_written: int = 0
     influx_status: str = "skipped"
     ha_status: str = "skipped"
+    motherduck_status: str = "skipped"
     errors: list[str] = field(default_factory=list)
 
 
@@ -31,6 +33,15 @@ def export_all(
         except Exception as exc:
             result.influx_status = "failed"
             result.errors.append(f"InfluxDB: {exc}")
+    if integration_complete(settings, "motherduck"):
+        try:
+            result.points_written += export_motherduck(
+                conn, settings, from_date=from_date
+            )
+            result.motherduck_status = "success"
+        except Exception as exc:
+            result.motherduck_status = "failed"
+            result.errors.append(f"MotherDuck: {exc}")
     if integration_complete(settings, "ha") and from_date is None:
         try:
             export_home_assistant(conn, settings)

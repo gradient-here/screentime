@@ -37,6 +37,12 @@ knowledgec = true  # this Mac's own usage
 # org = "home"
 # bucket = "screentime"
 
+[motherduck]
+# Hosted DuckDB (docs/motherduck.md). Setting database enables the export;
+# the database is created on first export. Install the motherduck extra.
+# database = "screentime"
+# token = ""
+
 [home_assistant]
 # url = "http://homeassistant.local:8123"
 # token = ""

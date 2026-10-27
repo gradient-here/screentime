@@ -18,6 +18,7 @@ from . import launchd
 from .config import Settings, integration_complete
 from .db import connect, get_state, parse_timestamp
 from .importer import BIOME_STREAM, KNOWLEDGEC_DB
+from .motherduck import check_motherduck
 
 FDA_PANE = "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
 STALE_DAYS = 3
@@ -116,6 +117,7 @@ def status(settings: Settings) -> dict[str, Any]:
         "sources": [name for name, on in settings.sources.items() if on],
         "influx": integration_complete(settings, "influx"),
         "home_assistant": integration_complete(settings, "ha"),
+        "motherduck": integration_complete(settings, "motherduck"),
     }
     if not settings.db_path.exists():
         return {**result, "devices": [], "last_run": None}
@@ -126,6 +128,7 @@ def status(settings: Settings) -> dict[str, Any]:
             **_db_facts(conn),
             "last_influx_success_at": get_state(conn, "last_influx_success_at"),
             "last_ha_success_at": get_state(conn, "last_ha_success_at"),
+            "last_motherduck_success_at": get_state(conn, "last_motherduck_success_at"),
         }
     finally:
         conn.close()
@@ -163,6 +166,12 @@ def doctor(settings: Settings, *, online: bool = False) -> dict[str, Any]:
             settings.influx_url or settings.influx_token,
         ),
         ("home_assistant", "ha", check_ha, settings.ha_url or settings.ha_token),
+        (
+            "motherduck",
+            "motherduck",
+            check_motherduck,
+            settings.motherduck_database or settings.motherduck_token,
+        ),
     ):
         if not integration_complete(settings, target):
             if configured:

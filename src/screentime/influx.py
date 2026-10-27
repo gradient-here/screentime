@@ -260,7 +260,9 @@ class _Client:
 
 
 def touched_days(
-    conn: sqlite3.Connection, from_date: date | None = None
+    conn: sqlite3.Connection,
+    from_date: date | None = None,
+    destination: str = "influx",
 ) -> list[sqlite3.Row]:
     """Device days to export: since ``from_date``, else changed since the cursor."""
     select = "SELECT day, device_id, updated_at FROM daily_device_stats"
@@ -269,7 +271,8 @@ def touched_days(
             f"{select} WHERE day >= ?", (from_date.isoformat(),)
         ).fetchall()
     cursor = conn.execute(
-        "SELECT updated_at FROM influx_sync_cursors WHERE destination='influx'"
+        "SELECT updated_at FROM influx_sync_cursors WHERE destination=?",
+        (destination,),
     ).fetchone()
     since = (cursor and cursor["updated_at"]) or ""
     return conn.execute(f"{select} WHERE updated_at > ?", (since,)).fetchall()

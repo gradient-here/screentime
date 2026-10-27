@@ -8,6 +8,7 @@
 | `summary` and `dump`, JSON shape | [cli.md](cli.md) |
 | Home Assistant sensors, limits, automations, dashboard card | [home-assistant.md](home-assistant.md) |
 | MCP server for Claude Code, Claude Desktop, Codex and Cursor | [mcp.md](mcp.md) |
+| MotherDuck export (hosted DuckDB) | [motherduck.md](motherduck.md) |
 | Letting an AI agent install it | [agent-installation.md](agent-installation.md) |
 | Pipeline, sources, InfluxDB schema, taxonomy, privacy | [architecture.md](architecture.md) |
 | Adding apps and categories, running the checks | [../CONTRIBUTING.md](../CONTRIBUTING.md) |

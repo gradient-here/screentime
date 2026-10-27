@@ -36,6 +36,8 @@ class Settings:
     ha_url: str | None = None
     ha_token: str | None = None
     ha_entity_prefix: str = "screentime"  # sensor.<prefix>_total, …
+    motherduck_database: str | None = None  # setting it enables the export
+    motherduck_token: str | None = None
     request_timeout: float = 30.0
     lookup_enabled: bool = True  # iTunes lookup for unknown bundle ids
     lookup_country: str | None = None  # App Store storefront; None: system region
@@ -108,6 +110,7 @@ def load_settings() -> Settings:
         raw = tomllib.loads(path.read_text(encoding="utf-8"))
     influx = raw.get("influx", {})
     ha = raw.get("home_assistant", {})
+    motherduck = raw.get("motherduck", {})
     lookup = raw.get("lookup", {})
 
     def pick(env: str, section: dict[str, Any], key: str) -> str | None:
@@ -139,6 +142,8 @@ def load_settings() -> Settings:
         lookup_enabled=bool(lookup.get("enabled", True)),
         lookup_country=str(lookup.get("country") or "").lower() or None,
         ha_entity_prefix=str(ha.get("entity_prefix") or "screentime"),
+        motherduck_database=pick("MOTHERDUCK_DATABASE", motherduck, "database"),
+        motherduck_token=pick("MOTHERDUCK_TOKEN", motherduck, "token"),
     )
 
 
@@ -152,6 +157,8 @@ def integration_complete(settings: Settings, target: str) -> bool:
         )
     if target == "ha":
         return bool(settings.ha_url and settings.ha_token)
+    if target == "motherduck":
+        return bool(settings.motherduck_database and settings.motherduck_token)
     raise ValueError(target)
 
 

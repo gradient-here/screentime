@@ -9,6 +9,8 @@ ENV = (
     "INFLUX_BUCKET",
     "HA_URL",
     "HA_TOKEN",
+    "MOTHERDUCK_DATABASE",
+    "MOTHERDUCK_TOKEN",
 )
 
 
